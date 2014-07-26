@@ -54,7 +54,7 @@ bot.addListener('message', function (from, to, message) {
 
     if ( to.match(/^[#&]/) ) {
         // channel message
-        if ( message.match(/http/i) ) {
+        if ( message.match(/^vhstv:\ /i) && message.match(/http/i) ) {
 			var url = message.match(/((https?):\/\/)?[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/i);
 			if (url) {
 				url = url[0];
