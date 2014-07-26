@@ -61,7 +61,7 @@ bot.addListener('error', function(message) {
 
 bot.addListener('message', function (from, to, message) {
     console.log('%s => %s: %s', from, to, message);
-    
+
     var handleChat = function(message, to) {
         var url = message.match(urlregex);
         if (url) {
