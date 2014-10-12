@@ -4,7 +4,7 @@ var debug = fs.existsSync('debug');
 
 if (debug) console.log('Starting in debug mode');
 
-var urlregex = /\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|$!:,.;]*[A-Z0-9+&@#\/%=~_|$]/i;
+var urlregex = /\b(https?:\/\/|data:|file:\/\/\/)[\-A-Z0-9+&@#\/%?=~_|$!:,.;]*[\-A-Z0-9+&@#\/%=~_|$]/i;
 var latest = 'http://i.imgur.com/2MuKYuw.gif';
 //var latest = 'http://i.kinja-img.com/gawker-media/image/upload/s--tijNedfe--/c_fit,fl_progressive,q_80,w_320/dh9m3ggkmzmikoza66dk.gif';
 
@@ -70,6 +70,18 @@ function formatResponse(message, from, to)
     return message.replace("%from", from).replace("%to", to);
 }
 
+function showImage(url) {
+	console.log('launching: %j', url);
+	latest = url;
+}
+
+function showImageMatch(from,to,message) {
+	var m = message.match(urlregex);
+	var url = m[0];
+	showImage(url);
+	bot.say(to, 'Showing ' + url);
+}
+
 bot.addListener('join', function (channel, nick, message) {
     if (greeting[nick])
         bot.say(channel, nick + ", " + greeting[nick]);
@@ -81,11 +93,11 @@ bot.addListener('message', function (from, to, message) {
     var handleChat = function(message, to, from) {
         var url = message.match(urlregex);
         var m = null;
-        if (url) {
+        if (url) { // compatability only
             url = url[0];
-            console.log('launching: %j', url);
-            latest = url;
-            bot.say(to, 'Showing ' + url);
+            showImageMatch(from,to,url);
+        } else if (message.match(/show/)) {
+            showImageMatch(from,to,message);
         } else if (message.match(/dance/)) {
             setTimeout(function () { bot.say(to, "\u0001ACTION dances: :D\\-<\u0001") }, 1000);
             setTimeout(function () { bot.say(to, "\u0001ACTION dances: :D|-<\u0001")  }, 2000);
